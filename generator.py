@@ -82,3 +82,15 @@ class PasswordGenerator:
         password = ''.join(password_chars)
         
         return password, ""
+    
+    def generate_multiple_passwords(self, count, total_length, lowercase_count=0, 
+                                uppercase_count=0, digits_count=0, special_count=0):
+        passwords = []
+        errors = []
+        for i in range(count):
+            password, error = self.generate_password(total_length, lowercase_count, uppercase_count, digits_count, special_count)
+            if password is not None:
+                passwords.append(password)
+            else:
+                errors.append(f"Пароль #{i+1}: {error}")
+        return passwords, errors

@@ -1,3 +1,8 @@
+"""
+Модульные тесты для генератора паролей.
+Использует встроенный модуль unittest.
+"""
+
 import unittest
 from generator import PasswordGenerator
 from validator import PasswordValidator

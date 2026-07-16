@@ -1,3 +1,8 @@
+"""
+Модуль генератора паролей
+Содержит класс PasswordGenerator для создания случайных паролей
+"""
+
 import random
 import secrets
 import string

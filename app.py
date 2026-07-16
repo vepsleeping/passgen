@@ -1,3 +1,8 @@
+"""
+Модуль консольного интерфейса
+Содержит класс ConsoleApp для взаимодействия с пользователем
+"""
+
 import sys
 from generator import PasswordGenerator
 from validator import PasswordValidator

@@ -1,15 +1,9 @@
-"""
-Модульные тесты для генератора паролей.
-Использует встроенный модуль unittest.
-"""
-
 import unittest
 from generator import PasswordGenerator
 from validator import PasswordValidator
 
 
 class TestPasswordGenerator(unittest.TestCase):
-    
     def setUp(self):
         self.generator = PasswordGenerator(use_secrets=False)
     
@@ -26,6 +20,7 @@ class TestPasswordGenerator(unittest.TestCase):
         self.assertEqual(error, "")
         self.assertEqual(len(password), 10)
         
+        # Проверка через валидатор
         is_valid, report = PasswordValidator.check_compliance(
             password, 3, 2, 2, 1
         )
@@ -114,14 +109,34 @@ class TestPasswordGenerator(unittest.TestCase):
         )
         self.assertTrue(is_valid, f"Пароль не прошёл проверку: {report}")
 
+    def test_generate_multiple_passwords(self):
+        passwords, errors = self.generator.generate_multiple_passwords(
+            count=3,
+            total_length=10,
+            lowercase_count=2,
+            uppercase_count=2,
+            digits_count=2,
+            special_count=1
+        )
+        
+        self.assertEqual(len(passwords), 3)
+        self.assertEqual(errors, [])
+        
+        for pwd in passwords:
+            self.assertEqual(len(pwd), 10)
+            is_valid, report = PasswordValidator.check_compliance(
+                pwd, 2, 2, 2, 1
+            )
+            self.assertTrue(is_valid, f"Пароль {pwd} не прошёл проверку")
+
 
 class TestPasswordValidator(unittest.TestCase):
-    
     def test_check_compliance_valid(self):
         is_valid, report = PasswordValidator.check_compliance(
-            "Abc123!@#", 3, 1, 3, 2
+            "Abcd123!@", 3, 1, 3, 2
         )
         self.assertTrue(is_valid)
+        self.assertEqual(report['errors'], [])
     
     def test_check_compliance_missing_lowercase(self):
         is_valid, report = PasswordValidator.check_compliance(
@@ -133,7 +148,7 @@ class TestPasswordValidator(unittest.TestCase):
     def test_check_compliance_empty_password(self):
         is_valid, report = PasswordValidator.check_compliance("", 0, 0, 0, 0)
         self.assertFalse(is_valid)
-        self.assertEqual(report, (False, "Пароль пуст"))
+        self.assertEqual(report, "Пароль пуст")  # Исправлено: ожидаем строку
     
     def test_check_compliance_invalid_chars(self):
         is_valid, report = PasswordValidator.check_compliance(
